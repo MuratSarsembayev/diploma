@@ -7,7 +7,6 @@ from load_all import bot, dp, db
 from filters import *
 from aiogram.types.reply_keyboard import ReplyKeyboardRemove
 
-action = 0
 city_a = ""
 city_b = ""
 date = ""
@@ -98,15 +97,12 @@ async def register_user(message: types.Message):
 
 @dp.message_handler(Button("Отправить"))
 async def send(message: Message):
-    global action
-    action = 1
     await message.reply("Введите название города, из которого Вы хотите отправить посылку",
                         reply_markup=ReplyKeyboardRemove())
 
 
 @dp.message_handler()
 async def send(message: Message):
-    if action == 1:
         global city_a
         city_a = message.text
         await message.reply("Введите название города, в который Вы хотите отправить посылку")
@@ -114,7 +110,6 @@ async def send(message: Message):
 
 @dp.message_handler()
 async def send(message: Message):
-    if action == 1:
         global city_b
         city_b = message.text
         await message.reply("Введите дату, когда вы хотите отправить посылку. Дату нужно ввести в формате ДД/ММ/ГГГГ")
@@ -122,7 +117,6 @@ async def send(message: Message):
 
 @dp.message_handler()
 async def send(message: Message):
-    if action == 1:
         global date
         date = message.text
         await db.add_new_sender(city_a, city_b, date)
@@ -132,16 +126,15 @@ async def send(message: Message):
                         reply_markup=keyboard)
 
 
+
 @dp.message_handler(Button("Перевезти"))
 async def send(message: Message):
-    if action == 0:
         await message.reply("Введите название города, из которого Вы хотите перевезти посылку",
                         reply_markup=ReplyKeyboardRemove())
 
 
 @dp.message_handler()
 async def send(message: Message):
-    if action == 0:
         global city_a
         city_a = message.text
         await message.reply("Введите название города, в который Вы хотите перевезти посылку")
@@ -149,7 +142,6 @@ async def send(message: Message):
 
 @dp.message_handler()
 async def send(message: Message):
-    if action == 0:
         global city_b
         city_b = message.text
         await message.reply("Введите дату, когда вы можете перевезти посылку. Дату нужно ввести в формате ДД/ММ/ГГГГ")
@@ -157,7 +149,6 @@ async def send(message: Message):
 
 @dp.message_handler()
 async def send(message: Message):
-    if action == 0:
         global date
         date = message.text
         await db.add_new_taker(city_a, city_b, date)
