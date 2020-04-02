@@ -8,7 +8,7 @@ from filters import *
 from aiogram.types.reply_keyboard import ReplyKeyboardRemove
 from aiogram.dispatcher.storage import FSMContext
 from states import States
-
+from datetime import date
 
 keyboard = ListOfButtons(text=["Отправить", "Перевезти"]).reply_keyboard
 class DBCommands:
@@ -110,22 +110,42 @@ async def send_city_b(message: Message, state: FSMContext):
 
 
 @dp.message_handler(state= States.Send_City_B)
-async def send_date(message: Message, state: FSMContext):
+async def send_date_day(message: Message, state: FSMContext):
         city_b = message.text
         await state.update_data(city_b = city_b)
-        await message.reply("Введите дату, когда вы хотите отправить посылку. Дату нужно ввести в формате ДД/ММ/ГГГГ")
-        await States.Send_Date.set()
+        await message.reply("Введите день, когда вы хотите отправить посылку(1-31)")
+        await States.Send_Day.set()
 
 
-@dp.message_handler(state= States.Send_Date)
+@dp.message_handler(state= States.Send_Day)
+async def send_date_month(message: Message, state: FSMContext):
+        day = message.text
+        await state.update_data(day= day)
+        await message.reply("Введите месяц, когда вы хотите отправить посылку(1-12)")
+        await States.Send_Month.set()
+
+
+@dp.message_handler(state= States.Send_Month)
+async def send_date_year(message: Message, state: FSMContext):
+        month = message.text
+        await state.update_data(month= month)
+        await message.reply("Введите год, когда вы хотите отправить посылку(1-9999)")
+        await States.Send_Year.set()
+
+
+@dp.message_handler(state= States.Send_Year)
 async def send_show_takers(message: Message, state: FSMContext):
-        date = message.text
+        year = message.text
         data = await state.get_data()
         city_a = data.get("city_a")
         city_b = data.get("city_b")
-        await db.add_new_sender(city_a, city_b, date)
-        text = f""""""
-        text += str(await db.show_takers(city_a, city_b, date))
+        day = data.get("day")
+        month = data.get("month")
+        send_date = date(day, month, year)
+        await db.add_new_sender(city_a, city_b, send_date)
+        text = f"""Список тех кто хочет отправить посылку в нужную вам дату
+"""
+        text += str(await db.show_takers(city_a, city_b, send_date))
         await message.reply(text,
                         reply_markup=keyboard)
         await state.reset_state()
@@ -147,22 +167,42 @@ async def take_city_b(message: Message, state: FSMContext):
 
 
 @dp.message_handler(state= States.Take_City_B)
-async def take_date(message: Message, state: FSMContext):
+async def take_date_day(message: Message, state: FSMContext):
         city_b = message.text
         await state.update_data(city_b=city_b)
-        await message.reply("Введите дату, когда вы можете перевезти посылку. Дату нужно ввести в формате ДД/ММ/ГГГГ")
-        await States.Take_Date.set()
+        await message.reply("Введите день, когда вы можете перевезти посылку(1-31)")
+        await States.Take_Day.set()
 
 
-@dp.message_handler(state= States.Take_Date)
-async def take_show_senders(message: Message, state: FSMContext):
-        date = message.text
+@dp.message_handler(state= States.Take_Day)
+async def take_date_month(message: Message, state: FSMContext):
+        day = message.text
+        await state.update_data(day= day)
+        await message.reply("Введите месяц, когда вы можете перевезти посылку(1-12)")
+        await States.Take_Month.set()
+
+
+@dp.message_handler(state= States.Take_Month)
+async def take_date_year(message: Message, state: FSMContext):
+        month = message.text
+        await state.update_data(month= month)
+        await message.reply("Введите год, когда вы можете перевезти посылку(1-9999)")
+        await States.Send_Year.set()
+
+
+@dp.message_handler(state= States.Take_Year)
+async def send_show_senders(message: Message, state: FSMContext):
+        year = message.text
         data = await state.get_data()
         city_a = data.get("city_a")
         city_b = data.get("city_b")
-        await db.add_new_taker(city_a, city_b, date)
-        text = f""""""
-        text += str(await db.show_senders(city_a, city_b, date))
+        day = data.get("day")
+        month = data.get("month")
+        take_date = date(day, month, year)
+        await db.add_new_taker(city_a, city_b, take_date)
+        text = f"""Список тех, кто хочет отправить посылку в нужную вам дату
+"""
+        text += str(await db.show_senders(city_a, city_b, take_date))
         await message.reply(text,
                         reply_markup=keyboard)
         await state.reset_state()
