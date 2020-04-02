@@ -135,12 +135,12 @@ async def send_date_year(message: Message, state: FSMContext):
 
 @dp.message_handler(state= States.Send_Year)
 async def send_show_takers(message: Message, state: FSMContext):
-        year = message.text
+        year = int(message.text)
         data = await state.get_data()
         city_a = data.get("city_a")
         city_b = data.get("city_b")
-        day = data.get("day")
-        month = data.get("month")
+        day = int(data.get("day"))
+        month = int(data.get("month"))
         send_date = date(day, month, year)
         await db.add_new_sender(city_a, city_b, send_date)
         text = f"""Список тех кто хочет отправить посылку в нужную вам дату
@@ -192,12 +192,12 @@ async def take_date_year(message: Message, state: FSMContext):
 
 @dp.message_handler(state= States.Take_Year)
 async def send_show_senders(message: Message, state: FSMContext):
-        year = message.text
+        year = int(message.text)
         data = await state.get_data()
         city_a = data.get("city_a")
         city_b = data.get("city_b")
-        day = data.get("day")
-        month = data.get("month")
+        day = int(data.get("day"))
+        month = int(data.get("month"))
         take_date = date(day, month, year)
         await db.add_new_taker(city_a, city_b, take_date)
         text = f"""Список тех, кто хочет отправить посылку в нужную вам дату
