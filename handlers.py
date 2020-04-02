@@ -96,64 +96,64 @@ async def register_user(message: types.Message):
 
 
 @dp.message_handler(Button("Отправить"))
-async def send(message: Message):
+async def send_city_a(message: Message):
     await message.reply("Введите название города, из которого Вы хотите отправить посылку",
                         reply_markup=ReplyKeyboardRemove())
 
 
 @dp.message_handler()
-async def send(message: Message):
+async def send_city_b(message: Message):
         global city_a
         city_a = message.text
         await message.reply("Введите название города, в который Вы хотите отправить посылку")
 
 
 @dp.message_handler()
-async def send(message: Message):
+async def send_date(message: Message):
         global city_b
         city_b = message.text
         await message.reply("Введите дату, когда вы хотите отправить посылку. Дату нужно ввести в формате ДД/ММ/ГГГГ")
 
 
 @dp.message_handler()
-async def send(message: Message):
+async def send_show_takers(message: Message):
         global date
         date = message.text
         await db.add_new_sender(city_a, city_b, date)
         text = f""""""
-        text += str(await db.show_senders(city_a, city_b, date))
+        text += str(await db.show_takers(city_a, city_b, date))
         await message.reply(text,
                         reply_markup=keyboard)
 
 
 
 @dp.message_handler(Button("Перевезти"))
-async def send(message: Message):
+async def take_city_a(message: Message):
         await message.reply("Введите название города, из которого Вы хотите перевезти посылку",
                         reply_markup=ReplyKeyboardRemove())
 
 
 @dp.message_handler()
-async def send(message: Message):
+async def take_city_b(message: Message):
         global city_a
         city_a = message.text
         await message.reply("Введите название города, в который Вы хотите перевезти посылку")
 
 
 @dp.message_handler()
-async def send(message: Message):
+async def take_date(message: Message):
         global city_b
         city_b = message.text
         await message.reply("Введите дату, когда вы можете перевезти посылку. Дату нужно ввести в формате ДД/ММ/ГГГГ")
 
 
 @dp.message_handler()
-async def send(message: Message):
+async def take_show_senders(message: Message):
         global date
         date = message.text
         await db.add_new_taker(city_a, city_b, date)
         text = f""""""
-        text += str(await db.show_takers(city_a, city_b, date))
+        text += str(await db.show_senders(city_a, city_b, date))
         await message.reply(text,
                         reply_markup=keyboard)
 
