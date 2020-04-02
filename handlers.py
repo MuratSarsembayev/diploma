@@ -6,10 +6,9 @@ from keyboards import ListOfButtons
 from load_all import bot, dp, db
 from filters import *
 from aiogram.types.reply_keyboard import ReplyKeyboardRemove
+from aiogram.dispatcher.storage import FSMContext
+from states import States
 
-city_a = ""
-city_b = ""
-date = ""
 
 keyboard = ListOfButtons(text=["Отправить", "Перевезти"]).reply_keyboard
 class DBCommands:
@@ -99,64 +98,86 @@ async def register_user(message: types.Message):
 async def send_city_a(message: Message):
     await message.reply("Введите название города, из которого Вы хотите отправить посылку",
                         reply_markup=ReplyKeyboardRemove())
+    await States.Send_City_A.set()
 
 
-@dp.message_handler()
-async def send_city_b(message: Message):
-        global city_a
+@dp.message_handler(state= States.Send_City_A)
+async def send_city_b(message: Message, state: FSMContext):
         city_a = message.text
+        await state.update_data(city_a= city_a)
         await message.reply("Введите название города, в который Вы хотите отправить посылку")
+        await States.Send_City_B.set()
 
 
-@dp.message_handler()
-async def send_date(message: Message):
-        global city_b
+@dp.message_handler(state= States.Send_City_B)
+async def send_date(message: Message, state: FSMContext):
         city_b = message.text
+        await state.update_data(city_b = city_b)
         await message.reply("Введите дату, когда вы хотите отправить посылку. Дату нужно ввести в формате ДД/ММ/ГГГГ")
+        await States.Send_Date.set()
 
 
-@dp.message_handler()
-async def send_show_takers(message: Message):
-        global date
+@dp.message_handler(state= States.Send_Date)
+async def send_show_takers(message: Message, state: FSMContext):
         date = message.text
+        data = await state.get_data()
+        city_a = data.get("city_a")
+        city_b = data.get("city_b")
         await db.add_new_sender(city_a, city_b, date)
         text = f""""""
         text += str(await db.show_takers(city_a, city_b, date))
         await message.reply(text,
                         reply_markup=keyboard)
-
+        await state.reset_state()
 
 
 @dp.message_handler(Button("Перевезти"))
 async def take_city_a(message: Message):
         await message.reply("Введите название города, из которого Вы хотите перевезти посылку",
                         reply_markup=ReplyKeyboardRemove())
+        await States.Take_City_A.set()
 
 
-@dp.message_handler()
-async def take_city_b(message: Message):
-        global city_a
+@dp.message_handler(state= States.Take_City_A)
+async def take_city_b(message: Message, state: FSMContext):
         city_a = message.text
+        await state.update_data(city_a=city_a)
         await message.reply("Введите название города, в который Вы хотите перевезти посылку")
+        await States.Take_City_B.set()
 
 
-@dp.message_handler()
-async def take_date(message: Message):
-        global city_b
+@dp.message_handler(state= States.Take_City_B)
+async def take_date(message: Message, state: FSMContext):
         city_b = message.text
+        await state.update_data(city_b=city_b)
         await message.reply("Введите дату, когда вы можете перевезти посылку. Дату нужно ввести в формате ДД/ММ/ГГГГ")
+        await States.Take_Date.set()
 
 
-@dp.message_handler()
-async def take_show_senders(message: Message):
-        global date
+@dp.message_handler(state= States.Take_Date)
+async def take_show_senders(message: Message, state: FSMContext):
         date = message.text
+        data = await state.get_data()
+        city_a = data.get("city_a")
+        city_b = data.get("city_b")
         await db.add_new_taker(city_a, city_b, date)
         text = f""""""
         text += str(await db.show_senders(city_a, city_b, date))
         await message.reply(text,
                         reply_markup=keyboard)
+        await state.reset_state()
 
+
+@dp.message_handler()
+async def default_message(message):
+    text = ""
+    text += f"""
+    Добро пожаловать в систему Apar Bot.
+    Вы зарегистрированы.
+    Желаете отправить посылку или перевезти посылку?
+
+    """
+    await bot.send_message(text, reply_markup=keyboard)
 
 
 
