@@ -101,7 +101,7 @@ async def send_city_a(message: Message):
     await States.Send_City_A.set()
 
 
-@dp.message_handler(state= States.Send_City_A)
+@dp.message_handler(state=States.Send_City_A)
 async def send_city_b(message: Message, state: FSMContext):
         city_a = message.text
         await state.update_data(city_a= city_a)
@@ -109,10 +109,10 @@ async def send_city_b(message: Message, state: FSMContext):
         await States.Send_City_B.set()
 
 
-@dp.message_handler(state= States.Send_City_B)
+@dp.message_handler(state=States.Send_City_B)
 async def send_date_day(message: Message, state: FSMContext):
         city_b = message.text
-        await state.update_data(city_b = city_b)
+        await state.update_data(city_b=city_b)
         await message.reply("Введите день, когда вы хотите отправить посылку(1-31)")
         await States.Send_Day.set()
 
@@ -120,20 +120,20 @@ async def send_date_day(message: Message, state: FSMContext):
 @dp.message_handler(state= States.Send_Day)
 async def send_date_month(message: Message, state: FSMContext):
         day = message.text
-        await state.update_data(day= day)
+        await state.update_data(day=day)
         await message.reply("Введите месяц, когда вы хотите отправить посылку(1-12)")
         await States.Send_Month.set()
 
 
-@dp.message_handler(state= States.Send_Month)
+@dp.message_handler(state=States.Send_Month)
 async def send_date_year(message: Message, state: FSMContext):
         month = message.text
-        await state.update_data(month= month)
+        await state.update_data(month=month)
         await message.reply("Введите год, когда вы хотите отправить посылку(1-9999)")
         await States.Send_Year.set()
 
 
-@dp.message_handler(state= States.Send_Year)
+@dp.message_handler(state=States.Send_Year)
 async def send_show_takers(message: Message, state: FSMContext):
         year = int(message.text)
         data = await state.get_data()
@@ -141,7 +141,7 @@ async def send_show_takers(message: Message, state: FSMContext):
         city_b = data.get("city_b")
         day = int(data.get("day"))
         month = int(data.get("month"))
-        send_date = date(day, month, year, errors='coerce').isoformat()
+        send_date = date(year, month, day).isoformat()
         await db.add_new_sender(city_a, city_b, send_date)
         text = f"""Список тех кто хочет отправить посылку в нужную вам дату
 """
@@ -158,7 +158,7 @@ async def take_city_a(message: Message):
         await States.Take_City_A.set()
 
 
-@dp.message_handler(state= States.Take_City_A)
+@dp.message_handler(state=States.Take_City_A)
 async def take_city_b(message: Message, state: FSMContext):
         city_a = message.text
         await state.update_data(city_a=city_a)
@@ -166,7 +166,7 @@ async def take_city_b(message: Message, state: FSMContext):
         await States.Take_City_B.set()
 
 
-@dp.message_handler(state= States.Take_City_B)
+@dp.message_handler(state=States.Take_City_B)
 async def take_date_day(message: Message, state: FSMContext):
         city_b = message.text
         await state.update_data(city_b=city_b)
@@ -174,15 +174,15 @@ async def take_date_day(message: Message, state: FSMContext):
         await States.Take_Day.set()
 
 
-@dp.message_handler(state= States.Take_Day)
+@dp.message_handler(state=States.Take_Day)
 async def take_date_month(message: Message, state: FSMContext):
         day = message.text
-        await state.update_data(day= day)
+        await state.update_data(day=day)
         await message.reply("Введите месяц, когда вы можете перевезти посылку(1-12)")
         await States.Take_Month.set()
 
 
-@dp.message_handler(state= States.Take_Month)
+@dp.message_handler(state=States.Take_Month)
 async def take_date_year(message: Message, state: FSMContext):
         month = message.text
         await state.update_data(month= month)
@@ -190,7 +190,7 @@ async def take_date_year(message: Message, state: FSMContext):
         await States.Send_Year.set()
 
 
-@dp.message_handler(state= States.Take_Year)
+@dp.message_handler(state=States.Take_Year)
 async def send_show_senders(message: Message, state: FSMContext):
         year = int(message.text)
         data = await state.get_data()
@@ -198,7 +198,7 @@ async def send_show_senders(message: Message, state: FSMContext):
         city_b = data.get("city_b")
         day = int(data.get("day"))
         month = int(data.get("month"))
-        take_date = date(day, month, year, errors='coerce').isoformat()
+        take_date = date(year, month, day).isoformat()
         await db.add_new_taker(city_a, city_b, take_date)
         text = f"""Список тех, кто хочет отправить посылку в нужную вам дату
 """
