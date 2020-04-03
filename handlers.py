@@ -141,7 +141,7 @@ async def send_show_takers(message: Message, state: FSMContext):
         city_b = data.get("city_b")
         day = int(data.get("day"))
         month = int(data.get("month"))
-        send_date = date(day, month, year)
+        send_date = date(day, month, year).isoformat()
         await db.add_new_sender(city_a, city_b, send_date)
         text = f"""Список тех кто хочет отправить посылку в нужную вам дату
 """
@@ -198,7 +198,7 @@ async def send_show_senders(message: Message, state: FSMContext):
         city_b = data.get("city_b")
         day = int(data.get("day"))
         month = int(data.get("month"))
-        take_date = date(day, month, year)
+        take_date = date(day, month, year).isoformat()
         await db.add_new_taker(city_a, city_b, take_date)
         text = f"""Список тех, кто хочет отправить посылку в нужную вам дату
 """
