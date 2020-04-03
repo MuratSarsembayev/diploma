@@ -8,9 +8,11 @@ from filters import *
 from aiogram.types.reply_keyboard import ReplyKeyboardRemove
 from aiogram.dispatcher.storage import FSMContext
 from states import States
-from datetime import date
+from datetime import datetime, date
 
 keyboard = ListOfButtons(text=["Отправить", "Перевезти"]).reply_keyboard
+
+
 class DBCommands:
     pool: Connection = db
     ADD_NEW_USER = "INSERT INTO users(chat_id, username, full_name) VALUES ($1, $2, $3)"
@@ -35,9 +37,10 @@ class DBCommands:
         except UniqueViolationError:
             pass
 
-    async def add_new_sender(self, city_a, city_b, send_date):
+    async def add_new_sender(self, city_a, city_b, senddate):
         user = types.User.get_current()
         username = user.username
+        send_date = datetime.datetime.strptime(senddate, '%Y-%m-%d')
         args = username, city_a, city_b, send_date
         command = self.ADD_NEW_SENDER
         try:
@@ -46,9 +49,10 @@ class DBCommands:
         except UniqueViolationError:
             pass
 
-    async def add_new_taker(self, city_a, city_b, take_date):
+    async def add_new_taker(self, city_a, city_b, takedate):
         user = types.User.get_current()
         username = user.username
+        take_date = datetime.datetime.strptime(takedate, '%Y-%m-%d')
         args = username, city_a, city_b, take_date
         command = self.ADD_NEW_TAKER
         try:
