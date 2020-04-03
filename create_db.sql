@@ -20,7 +20,7 @@ create table if not exists senders
     city_a text,
     city_b text,
     send_date date,
-    id        serial            not null
+    id        serial            not null primary key
 );
 
 alter table senders
@@ -35,7 +35,7 @@ create table if not exists takers
     city_a text,
     city_b text,
     take_date date,
-    id        serial            not null
+    id        serial            not null primary key
 );
 
 alter table takers
