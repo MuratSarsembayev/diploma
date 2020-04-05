@@ -15,7 +15,7 @@ keyboard = ListOfButtons(text=["Отправить", "Перевезти"]).repl
 
 class DBCommands:
     pool: Connection = db
-    ADD_NEW_USER = "INSERT INTO users(chat_id, username, full_name) VALUES ($1, $2, $3)"
+    ADD_NEW_USER = "INSERT INTO users(chat_id, ""username"", full_name) VALUES ($1, $2, $3)"
     ADD_NEW_SENDER = "INSERT INTO senders(username, city_a, city_b, send_date) VALUES ($1, $2, $3, $4)"
     ADD_NEW_TAKER = "INSERT INTO takers(username, city_a, city_b, take_date) VALUES ($1, $2, $3, $4)"
     SELECT_SENDERS = "SELECT * FROM senders(username, city_a, city_b, send_date)" \
