@@ -3,7 +3,7 @@ create table if not exists users
     chat_id   bigint            not null
         constraint users_pk
             primary key,
-    "username"  text,
+    username  text,
     full_name text,
     id        serial            not null
 );
