@@ -19,9 +19,9 @@ class DBCommands:
     ADD_NEW_SENDER = "INSERT INTO senders (username, city_a, city_b, send_date) VALUES ($1, $2, $3, $4)"
     ADD_NEW_TAKER = "INSERT INTO takers (username, city_a, city_b, take_date) VALUES ($1, $2, $3, $4)"
     SELECT_SENDERS = "SELECT (username, city_a, city_b) FROM senders " \
-                     " WHERE city_a= ($1) AND city_b=($2) AND send_date=($3) AND id=($4)"
+                     " WHERE city_a= ($1) AND city_b=($2) AND send_date=($3)"
     SELECT_TAKERS = "SELECT (username, city_a, city_b) FROM takers" \
-                    " WHERE city_a= ($1) AND city_b=($2) AND take_date=($3) AND id=($4)"
+                    " WHERE city_a= ($1) AND city_b=($2) AND take_date=($3)"
 
     async def add_new_user(self):
         user = types.User.get_current()
