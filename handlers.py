@@ -61,7 +61,7 @@ class DBCommands:
         except UniqueViolationError:
             pass
 
-    async def show_senders(self, city_a, city_b, senddate, id):
+    async def show_senders(self, city_a, city_b, senddate):
         send_date = datetime.strptime(senddate, '%Y-%m-%d')
         args = city_a, city_b, send_date, id
         command = self.SELECT_SENDERS
@@ -71,7 +71,7 @@ class DBCommands:
         except UniqueViolationError:
             pass
 
-    async def show_takers(self, city_a, city_b, takedate, id):
+    async def show_takers(self, city_a, city_b, takedate):
         take_date = datetime.strptime(takedate, '%Y-%m-%d')
         args = city_a, city_b, take_date, id
         command = self.SELECT_TAKERS
