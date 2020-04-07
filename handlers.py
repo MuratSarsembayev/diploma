@@ -32,7 +32,7 @@ class DBCommands:
         command = self.ADD_NEW_USER
 
         try:
-            record_id = await self.pool.fetchval(command, *args)
+            record_id = await self.pool.fetchval(command, *[args])
             return record_id
         except UniqueViolationError:
             pass
@@ -44,7 +44,7 @@ class DBCommands:
         args = username, city_a, city_b, send_date
         command = self.ADD_NEW_SENDER
         try:
-            record_id = await self.pool.fetchval(command, *args)
+            record_id = await self.pool.fetchval(command, *[args])
             return record_id
         except UniqueViolationError:
             pass
@@ -56,7 +56,7 @@ class DBCommands:
         args = username, city_a, city_b, take_date
         command = self.ADD_NEW_TAKER
         try:
-            record_id = await self.pool.fetchval(command, *args)
+            record_id = await self.pool.fetchval(command, *[args])
             return record_id
         except UniqueViolationError:
             pass
@@ -65,7 +65,7 @@ class DBCommands:
         args = city_a, city_b, send_date
         command = self.SELECT_SENDERS
         try:
-            data = await self.pool.fetch(command, *args)
+            data = await self.pool.fetch(command, *[args])
             return data
         except UniqueViolationError:
             pass
@@ -74,7 +74,7 @@ class DBCommands:
         args = city_a, city_b, take_date
         command = self.SELECT_TAKERS
         try:
-            data = await self.pool.fetch(command, *args)
+            data = await self.pool.fetch(command, *[args])
             return data
         except UniqueViolationError:
             pass
