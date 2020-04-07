@@ -16,12 +16,12 @@ keyboard = ListOfButtons(text=["Отправить", "Перевезти"]).repl
 class DBCommands:
     pool: Connection = db
     ADD_NEW_USER = "INSERT INTO users (chat_id, username, full_name) VALUES ($1, $2, $3)"
-    ADD_NEW_SENDER = "INSERT INTO senders (username, city_a, city_b, send_date) VALUES (\'$1\', \'$2\', \'$3\', $4)"
-    ADD_NEW_TAKER = "INSERT INTO takers (username, city_a, city_b, take_date) VALUES (\'$1\', \'$2\', \'$3\', $4)"
+    ADD_NEW_SENDER = "INSERT INTO senders (username, city_a, city_b, send_date) VALUES ($1, $2, $3, $4)"
+    ADD_NEW_TAKER = "INSERT INTO takers (username, city_a, city_b, take_date) VALUES ($1, $2, $3, $4)"
     SELECT_SENDERS = "SELECT (username, city_a, city_b) FROM senders(username, city_a, city_b, send_date)" \
-                     " WHERE city_a= (\'$1\') AND city_b=(\'$2\') AND send_date=($3)"
+                     " WHERE city_a= ($1) AND city_b=($2) AND send_date=($3)"
     SELECT_TAKERS = "SELECT (username, city_a, city_b) FROM takers(username, city_a, city_b, take_date)" \
-                     " WHERE city_a= (\'$1\') AND city_b=(\'$2\') AND take_date=($3)"
+                     " WHERE city_a= ($1) AND city_b=($2) AND take_date=($3)"
 
     async def add_new_user(self):
         user = types.User.get_current()
@@ -41,7 +41,7 @@ class DBCommands:
         user = types.User.get_current()
         username = user.username
         send_date = datetime.strptime(senddate, '%Y-%m-%d')
-        args = [username, city_a, city_b, send_date]
+        args = username, city_a, city_b, send_date
         command = self.ADD_NEW_SENDER
         try:
             record_id = await self.pool.fetchval(command, *args)
@@ -53,7 +53,7 @@ class DBCommands:
         user = types.User.get_current()
         username = user.username
         take_date = datetime.strptime(takedate, '%Y-%m-%d')
-        args = [username, city_a, city_b, take_date]
+        args = username, city_a, city_b, take_date
         command = self.ADD_NEW_TAKER
         try:
             record_id = await self.pool.fetchval(command, *args)
@@ -63,7 +63,7 @@ class DBCommands:
 
     async def show_senders(self, city_a, city_b, senddate):
         send_date = datetime.strptime(senddate, '%Y-%m-%d')
-        args = [city_a, city_b, send_date]
+        args = city_a, city_b, send_date
         command = self.SELECT_SENDERS
         try:
             data = await self.pool.fetch(command, *args)
@@ -73,7 +73,7 @@ class DBCommands:
 
     async def show_takers(self, city_a, city_b, takedate):
         take_date = datetime.strptime(takedate, '%Y-%m-%d')
-        args = [city_a, city_b, take_date]
+        args = city_a, city_b, take_date
         command = self.SELECT_TAKERS
         try:
             data = await self.pool.fetch(command, *args)
