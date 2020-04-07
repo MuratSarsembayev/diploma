@@ -28,11 +28,11 @@ class DBCommands:
         chat_id = int(user.id)
         username = user.username
         full_name = user.full_name
-        #args = [chat_id, username, full_name]
+        args = [chat_id, username, full_name]
         command = self.ADD_NEW_USER
 
         try:
-            record_id = await self.pool.fetchval(command, *[chat_id, username, full_name])
+            record_id = await self.pool.fetchval(command, args)
             return record_id
         except UniqueViolationError:
             pass
