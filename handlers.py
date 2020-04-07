@@ -67,7 +67,7 @@ class DBCommands:
         command = self.SELECT_SENDERS
         try:
             data = await self.pool.fetch(command, *args)
-            return data
+            return tuple(data)
         except UniqueViolationError:
             pass
 
@@ -77,7 +77,7 @@ class DBCommands:
         command = self.SELECT_TAKERS
         try:
             data = await self.pool.fetch(command, *args)
-            return data
+            return tuple(data)
         except UniqueViolationError:
             pass
 
@@ -154,9 +154,9 @@ async def send_show_takers(message: Message, state: FSMContext):
         takers = await db.show_takers(city_a, city_b, send_date)
         await message.reply(text,
                         reply_markup=keyboard)
-        text = '\n'.join(map(" ".join,takers))
-        await message.answer(text)
         await state.reset_state()
+        text = '\n'.join(map(" ".join, takers))
+        await message.answer(text)
 
 
 @dp.message_handler(Button("Перевезти"))
@@ -213,9 +213,9 @@ async def send_show_senders(message: Message, state: FSMContext):
         senders = await db.show_senders(city_a, city_b, take_date)
         await message.reply(text,
                         reply_markup=keyboard)
+        await state.reset_state()
         text = '\n'.join(map(" ".join, senders))
         await message.answer(text)
-        await state.reset_state()
 
 
 @dp.message_handler()
