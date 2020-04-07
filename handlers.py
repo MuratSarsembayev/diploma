@@ -19,9 +19,9 @@ class DBCommands:
     ADD_NEW_SENDER = "INSERT INTO senders (username, city_a, city_b, send_date) VALUES ($1, $2, $3, $4)"
     ADD_NEW_TAKER = "INSERT INTO takers (username, city_a, city_b, take_date) VALUES ($1, $2, $3, $4)"
     SELECT_SENDERS = "SELECT (username, city_a, city_b) FROM senders " \
-                     " WHERE city_a= ($1) AND city_b=($2) AND send_date=($3)"
+                     " WHERE city_a= ($1) AND city_b=($2) AND send_date=($3) AND id=($4)"
     SELECT_TAKERS = "SELECT (username, city_a, city_b) FROM takers" \
-                    " WHERE city_a= ($1) AND city_b=($2) AND take_date=($3)"
+                    " WHERE city_a= ($1) AND city_b=($2) AND take_date=($3) AND id=($4)"
 
     async def add_new_user(self):
         user = types.User.get_current()
@@ -61,23 +61,23 @@ class DBCommands:
         except UniqueViolationError:
             pass
 
-    async def show_senders(self, city_a, city_b, senddate):
+    async def show_senders(self, city_a, city_b, senddate, id):
         send_date = datetime.strptime(senddate, '%Y-%m-%d')
-        args = city_a, city_b, send_date
+        args = city_a, city_b, send_date, id
         command = self.SELECT_SENDERS
         try:
             data = await self.pool.fetch(command, *args)
-            return tuple(data)
+            return "\n".join(map(" ".join(data)))
         except UniqueViolationError:
             pass
 
-    async def show_takers(self, city_a, city_b, takedate):
+    async def show_takers(self, city_a, city_b, takedate, id):
         take_date = datetime.strptime(takedate, '%Y-%m-%d')
-        args = city_a, city_b, take_date
+        args = city_a, city_b, take_date, id
         command = self.SELECT_TAKERS
         try:
             data = await self.pool.fetch(command, *args)
-            return tuple(data)
+            return "\n".join(map(" ".join(data)))
         except UniqueViolationError:
             pass
 
@@ -152,11 +152,10 @@ async def send_show_takers(message: Message, state: FSMContext):
         text = f"""Список тех кто может перевезти посылку в нужную вам дату
 """
         takers = await db.show_takers(city_a, city_b, send_date)
+        text += takers
         await message.reply(text,
                         reply_markup=keyboard)
         await state.reset_state()
-        text = '\n'.join(map(" ".join, takers))
-        await message.answer(text)
 
 
 @dp.message_handler(Button("Перевезти"))
@@ -211,11 +210,10 @@ async def send_show_senders(message: Message, state: FSMContext):
         text = f"""Список тех, кто хочет отправить посылку в нужную вам дату
 """
         senders = await db.show_senders(city_a, city_b, take_date)
+        text += senders
         await message.reply(text,
                         reply_markup=keyboard)
         await state.reset_state()
-        text = '\n'.join(map(" ".join, senders))
-        await message.answer(text)
 
 
 @dp.message_handler()
