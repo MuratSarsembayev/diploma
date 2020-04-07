@@ -25,14 +25,14 @@ class DBCommands:
 
     async def add_new_user(self):
         user = types.User.get_current()
-        chat_id = user.id
+        chat_id = int(user.id)
         username = user.username
         full_name = user.full_name
-        args = chat_id, username, full_name
+        args = [chat_id, username, full_name]
         command = self.ADD_NEW_USER
 
         try:
-            record_id = await self.pool.fetchval(command, *[args])
+            record_id = await self.pool.fetchval(command, *args)
             return record_id
         except UniqueViolationError:
             pass
@@ -41,10 +41,10 @@ class DBCommands:
         user = types.User.get_current()
         username = user.username
         send_date = datetime.strptime(senddate, '%Y-%m-%d')
-        args = username, city_a, city_b, send_date
+        args = [username, city_a, city_b, send_date]
         command = self.ADD_NEW_SENDER
         try:
-            record_id = await self.pool.fetchval(command, *[args])
+            record_id = await self.pool.fetchval(command, *args)
             return record_id
         except UniqueViolationError:
             pass
@@ -53,28 +53,30 @@ class DBCommands:
         user = types.User.get_current()
         username = user.username
         take_date = datetime.strptime(takedate, '%Y-%m-%d')
-        args = username, city_a, city_b, take_date
+        args = [username, city_a, city_b, take_date]
         command = self.ADD_NEW_TAKER
         try:
-            record_id = await self.pool.fetchval(command, *[args])
+            record_id = await self.pool.fetchval(command, *args)
             return record_id
         except UniqueViolationError:
             pass
 
-    async def show_senders(self, city_a, city_b, send_date):
-        args = city_a, city_b, send_date
+    async def show_senders(self, city_a, city_b, senddate):
+        send_date = datetime.strptime(senddate, '%Y-%m-%d')
+        args = [city_a, city_b, send_date]
         command = self.SELECT_SENDERS
         try:
-            data = await self.pool.fetch(command, *[args])
+            data = await self.pool.fetch(command, *args)
             return data
         except UniqueViolationError:
             pass
 
-    async def show_takers(self, city_a, city_b, take_date):
-        args = city_a, city_b, take_date
+    async def show_takers(self, city_a, city_b, takedate):
+        take_date = datetime.strptime(takedate, '%Y-%m-%d')
+        args = [city_a, city_b, take_date]
         command = self.SELECT_TAKERS
         try:
-            data = await self.pool.fetch(command, *[args])
+            data = await self.pool.fetch(command, *args)
             return data
         except UniqueViolationError:
             pass
