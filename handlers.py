@@ -151,8 +151,8 @@ async def send_show_takers(message: Message, state: FSMContext):
         await db.add_new_sender(city_a, city_b, send_date)
         text = f"""Список тех кто может перевезти посылку в нужную вам дату
 """
-        text += await db.show_takers(city_a, city_b, send_date)
-        await message.reply(text,
+        takers= await db.show_takers(city_a, city_b, send_date)
+        await message.reply(text, takers,
                         reply_markup=keyboard)
         await state.reset_state()
 
@@ -208,8 +208,8 @@ async def send_show_senders(message: Message, state: FSMContext):
         await db.add_new_taker(city_a, city_b, take_date)
         text = f"""Список тех, кто хочет отправить посылку в нужную вам дату
 """
-        text += await db.show_senders(city_a, city_b, take_date)
-        await message.reply(text,
+        senders = await db.show_senders(city_a, city_b, take_date)
+        await message.reply(text, senders,
                         reply_markup=keyboard)
         await state.reset_state()
 
