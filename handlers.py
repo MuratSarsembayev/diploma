@@ -67,7 +67,7 @@ class DBCommands:
         command = self.SELECT_SENDERS
         try:
             data = await self.pool.fetch(command, *args)
-            return "\n".join(map(" ".join, data))
+            return ", ".join(map(" ".join, data))
         except UniqueViolationError:
             pass
 
@@ -77,7 +77,7 @@ class DBCommands:
         command = self.SELECT_TAKERS
         try:
             data = await self.pool.fetch(command, *args)
-            return "\n".join(map(" ".join, data))
+            return ", ".join(map(" ".join, data))
         except UniqueViolationError:
             pass
 
@@ -88,7 +88,7 @@ db = DBCommands()
 @dp.message_handler(commands=["start"])
 async def register_user(message: types.Message):
     chat_id = message.from_user.id
-    id = await db.add_new_user()
+    await db.add_new_user()
     text = ""
     text += f"""
 Добро пожаловать в систему Apar Bot.
@@ -217,7 +217,7 @@ async def send_show_senders(message: Message, state: FSMContext):
 
 
 @dp.message_handler()
-async def default_message(message):
+async def default_message():
     text = ""
     text += f"""
     Добро пожаловать в систему Apar Bot.
