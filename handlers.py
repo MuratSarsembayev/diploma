@@ -154,8 +154,8 @@ async def send_show_takers(message: Message, state: FSMContext):
         takers = await db.show_takers(city_a, city_b, send_date)
         await message.reply(text,
                         reply_markup=keyboard)
-        res = '\n'.join(map(" ".join,takers))
-        await message.answer(res)
+        text = '\n'.join(map(" ".join,takers))
+        await message.answer(text)
         await state.reset_state()
 
 
@@ -213,8 +213,8 @@ async def send_show_senders(message: Message, state: FSMContext):
         senders = await db.show_senders(city_a, city_b, take_date)
         await message.reply(text,
                         reply_markup=keyboard)
-        res = '\n'.join(map(" ".join, senders))
-        await message.answer(res)
+        text = '\n'.join(map(" ".join, senders))
+        await message.answer(text)
         await state.reset_state()
 
 
