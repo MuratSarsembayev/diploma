@@ -32,7 +32,7 @@ class DBCommands:
         command = self.ADD_NEW_USER
 
         try:
-            record_id = await self.pool.fetchval(command, chat_id, username, full_name)
+            record_id = await self.pool.fetchval(command, *[chat_id, username, full_name])
             return record_id
         except UniqueViolationError:
             pass
