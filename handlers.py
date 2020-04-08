@@ -67,7 +67,7 @@ class DBCommands:
         command = self.SELECT_SENDERS
         try:
             data = await self.pool.fetch(command, *args)
-            return ", ".join(map(" ".join, data))
+            return [", ".join(map(" ".join, data))]
         except UniqueViolationError:
             pass
 
@@ -77,7 +77,7 @@ class DBCommands:
         command = self.SELECT_TAKERS
         try:
             data = await self.pool.fetch(command, *args)
-            return ", ".join(map(" ".join, data))
+            return [", ".join(map(" ".join, data))]
         except UniqueViolationError:
             pass
 
