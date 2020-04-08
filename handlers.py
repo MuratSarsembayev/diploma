@@ -68,7 +68,7 @@ class DBCommands:
         try:
             res = []
             data = await self.pool.fetch(command, *args)
-            for i in data:
+            for i in list(data):
                 res.append(list(i))
             return res
         except UniqueViolationError:
@@ -81,7 +81,7 @@ class DBCommands:
         try:
             res = []
             data = await self.pool.fetch(command, *args)
-            for i in data:
+            for i in list(data):
                 res.append(list(i))
             return res
         except UniqueViolationError:
