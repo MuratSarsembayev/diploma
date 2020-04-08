@@ -159,6 +159,8 @@ async def send_show_takers(message: Message, state: FSMContext):
         for i in takers:
             text = " ".join(takers[i])
             await message.answer(text)
+        text = "done!"
+        await message.answer(text)
         await state.reset_state()
 
 
@@ -215,6 +217,8 @@ async def send_show_senders(message: Message, state: FSMContext):
         for i in senders:
             text = " ".join(senders[i])
             await message.answer(text)
+        text = "done!"
+        await message.answer(text)
         await state.reset_state()
 
 
