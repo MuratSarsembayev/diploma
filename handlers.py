@@ -66,15 +66,10 @@ class DBCommands:
         args = city_a, city_b, send_date
         command = self.SELECT_SENDERS
         try:
-            rec = []
             res = []
             data = await self.pool.fetch(command, *args)
             for i in data:
-                rec.append(i['username'])
-                rec.append(i['city_a'])
-                rec.append(i['city_b'])
-                res.append(rec)
-                rec.clear()
+                res.append(list(i))
             return res
         except UniqueViolationError:
             pass
@@ -85,14 +80,9 @@ class DBCommands:
         command = self.SELECT_TAKERS
         try:
             res = []
-            rec = []
             data = await self.pool.fetch(command, *args)
             for i in data:
-                rec.append(i['username'])
-                rec.append(i['city_a'])
-                rec.append(i['city_b'])
-                res.append(rec)
-                rec.clear()
+                res.append(list(i))
             return res
         except UniqueViolationError:
             pass
