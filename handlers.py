@@ -70,9 +70,9 @@ class DBCommands:
             res = []
             data = await self.pool.fetch(command, *args)
             for i in data:
-                rec.append(data['username'])
-                rec.append(data['city_a'])
-                rec.append(data['city_b'])
+                rec.append(i['username'])
+                rec.append(i['city_a'])
+                rec.append(i['city_b'])
                 res.append(rec)
                 rec.clear()
             return res
@@ -88,9 +88,9 @@ class DBCommands:
             rec = []
             data = await self.pool.fetch(command, *args)
             for i in data:
-                rec.append(data['username'])
-                rec.append(data['city_a'])
-                rec.append(data['city_b'])
+                rec.append(i['username'])
+                rec.append(i['city_a'])
+                rec.append(i['city_b'])
                 res.append(rec)
                 rec.clear()
             return res
