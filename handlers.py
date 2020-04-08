@@ -69,7 +69,7 @@ class DBCommands:
             res = []
             data = await self.pool.fetch(command, *args)
             for i in data:
-                res.append(tuple(data[i]))
+                res.append(list(data[i]))
             return res
         except UniqueViolationError:
             pass
@@ -82,7 +82,7 @@ class DBCommands:
             res = []
             data = await self.pool.fetch(command, *args)
             for i in data:
-                res.append(tuple(data[i]))
+                res.append(list(data[i]))
             return res
         except UniqueViolationError:
             pass
@@ -155,13 +155,12 @@ async def send_show_takers(message: Message, state: FSMContext):
         month = int(data.get("month"))
         send_date = date(year, month, day).isoformat()
         await db.add_new_sender(city_a, city_b, send_date)
-        text = "Список тех кто может перевезти посылку в нужную вам дату"
+        text = "Список тех кто может перевезти посылку в нужную вам дату \n"
         takers = await db.show_takers(city_a, city_b, send_date)
-        res = ""
         for i in takers:
-            for j in takers[i]:
-                res += " ".join(takers[i][j])
-        text += res
+            res = " ".join(takers[i])
+            text += res
+            text += "\n"
         await message.reply(text,
                         reply_markup=keyboard)
         await state.reset_state()
@@ -216,13 +215,12 @@ async def send_show_senders(message: Message, state: FSMContext):
         month = int(data.get("month"))
         take_date = date(year, month, day).isoformat()
         await db.add_new_taker(city_a, city_b, take_date)
-        text = "Список тех, кто хочет отправить посылку в нужную вам дату"
+        text = "Список тех, кто хочет отправить посылку в нужную вам дату \n"
         senders = await db.show_senders(city_a, city_b, take_date)
-        res = ""
         for i in senders:
-            for j in senders[i]:
-                res += " ".join(senders[i][j])
-        text += res
+            res = " ".join(senders[i])
+            text += res
+            text += "\n"
         await message.reply(text,
                         reply_markup=keyboard)
         await state.reset_state()
