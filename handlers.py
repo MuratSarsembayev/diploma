@@ -68,9 +68,9 @@ class DBCommands:
         try:
             res = []
             data = await self.pool.fetch(command, *args)
-            for i in list(data):
+            for i in data:
                 res.append(list(i))
-            return res
+            return len(res)
         except UniqueViolationError:
             pass
 
@@ -81,9 +81,9 @@ class DBCommands:
         try:
             res = []
             data = await self.pool.fetch(command, *args)
-            for i in list(data):
+            for i in data:
                 res.append(list(i))
-            return res
+            return len(res)
         except UniqueViolationError:
             pass
 
@@ -156,10 +156,10 @@ async def send_show_takers(message: Message, state: FSMContext):
         send_date = date(year, month, day).isoformat()
         await db.add_new_sender(city_a, city_b, send_date)
         takers = await db.show_takers(city_a, city_b, send_date)
-        for i in takers:
-            text = " ".join(takers[i])
-            await message.answer(text)
-        text = "done!"
+        #for i in takers:
+         #   text = " ".join(takers[i])
+          #  await message.answer(text)
+        text = str(takers)
         await message.answer(text)
         await state.reset_state()
 
@@ -214,10 +214,10 @@ async def send_show_senders(message: Message, state: FSMContext):
         take_date = date(year, month, day).isoformat()
         await db.add_new_taker(city_a, city_b, take_date)
         senders = await db.show_senders(city_a, city_b, take_date)
-        for i in senders:
-            text = " ".join(senders[i])
-            await message.answer(text)
-        text = "done!"
+        #for i in senders:
+         #   text = " ".join(senders[i])
+          #  await message.answer(text)
+        text = str(senders)
         await message.answer(text)
         await state.reset_state()
 
