@@ -66,8 +66,11 @@ class DBCommands:
         args = city_a, city_b, send_date
         command = self.SELECT_SENDERS
         try:
+            res = []
             data = await self.pool.fetch(command, *args)
-            return [", ".join(map(" ".join, data))]
+            for i in data:
+                res.append(tuple(data[i]))
+            return res
         except UniqueViolationError:
             pass
 
@@ -76,8 +79,11 @@ class DBCommands:
         args = city_a, city_b, take_date
         command = self.SELECT_TAKERS
         try:
+            res = []
             data = await self.pool.fetch(command, *args)
-            return [", ".join(map(" ".join, data))]
+            for i in data:
+                res.append(tuple(data[i]))
+            return res
         except UniqueViolationError:
             pass
 
@@ -149,9 +155,10 @@ async def send_show_takers(message: Message, state: FSMContext):
         month = int(data.get("month"))
         send_date = date(year, month, day).isoformat()
         await db.add_new_sender(city_a, city_b, send_date)
-        #text = f"""Список тех кто может перевезти посылку в нужную вам дату"""
+        text = f"""Список тех кто может перевезти посылку в нужную вам дату"""
         takers = await db.show_takers(city_a, city_b, send_date)
-        text = takers
+        res = "\n".join(map(" ".join, takers))
+        text += res
         await message.reply(text,
                         reply_markup=keyboard)
         await state.reset_state()
@@ -206,16 +213,17 @@ async def send_show_senders(message: Message, state: FSMContext):
         month = int(data.get("month"))
         take_date = date(year, month, day).isoformat()
         await db.add_new_taker(city_a, city_b, take_date)
-        #text = f"""Список тех, кто хочет отправить посылку в нужную вам дату"""
+        text = f"""Список тех, кто хочет отправить посылку в нужную вам дату"""
         senders = await db.show_senders(city_a, city_b, take_date)
-        text = senders
+        res = "\n".join(map(" ".join, senders))
+        text += res
         await message.reply(text,
                         reply_markup=keyboard)
         await state.reset_state()
 
 
 @dp.message_handler()
-async def default_message():
+async def default_message(message):
     text = ""
     text += f"""
     Добро пожаловать в систему Apar Bot.
