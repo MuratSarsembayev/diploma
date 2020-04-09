@@ -40,7 +40,7 @@ class DBCommands:
     async def add_new_sender(self, city_a, city_b, senddate):
         user = types.User.get_current()
         username = user.username
-        send_date = datetime.strptime(senddate, '%Y-%m-%d')
+        send_date = datetime.strptime(senddate, '%Y-%M-%D')
         args = username, city_a, city_b, send_date
         command = self.ADD_NEW_SENDER
         try:
@@ -52,7 +52,7 @@ class DBCommands:
     async def add_new_taker(self, city_a, city_b, takedate):
         user = types.User.get_current()
         username = user.username
-        take_date = datetime.strptime(takedate, '%Y-%m-%d')
+        take_date = datetime.strptime(takedate, '%Y-M-%D')
         args = username, city_a, city_b, take_date
         command = self.ADD_NEW_TAKER
         try:
@@ -62,24 +62,20 @@ class DBCommands:
             pass
 
     async def show_senders(self, city_a, city_b, senddate):
-        send_date = datetime.strptime(senddate, '%Y-%m-%d')
+        send_date = datetime.strptime(senddate, '%Y-%M-%D')
         args = city_a, city_b, send_date
         command = self.SELECT_SENDERS
         try:
-            res = []
             data = await self.pool.fetch(command, *args)
-            for i in data:
-                res.append(list(i))
-            return len(res)
+            return len(data)
         except UniqueViolationError:
             pass
 
     async def show_takers(self, city_a, city_b, takedate):
-        take_date = datetime.strptime(takedate, '%Y-%m-%d')
+        take_date = datetime.strptime(takedate, '%Y-%M-%D')
         args = city_a, city_b, take_date
         command = self.SELECT_TAKERS
         try:
-            res = []
             data = await self.pool.fetch(command, *args)
             return len(data)
         except UniqueViolationError:
