@@ -81,9 +81,7 @@ class DBCommands:
         try:
             res = []
             data = await self.pool.fetch(command, *args)
-            for i in data:
-                res.append(list(i))
-            return len(res)
+            return len(data)
         except UniqueViolationError:
             pass
 
