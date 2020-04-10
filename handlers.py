@@ -40,7 +40,7 @@ class DBCommands:
     async def add_new_sender(self, city_a, city_b, senddate):
         user = types.User.get_current()
         username = user.username
-        send_date = datetime.strptime(senddate, '%Y-%M-%d').isoformat()
+        send_date = datetime.strptime(senddate, '%Y-%M-%d')
         args = username, city_a, city_b, send_date
         command = self.ADD_NEW_SENDER
         try:
@@ -52,7 +52,7 @@ class DBCommands:
     async def add_new_taker(self, city_a, city_b, takedate):
         user = types.User.get_current()
         username = user.username
-        take_date = datetime.strptime(takedate, '%Y-M-%d').isoformat()
+        take_date = datetime.strptime(takedate, '%Y-M-%d')
         args = username, city_a, city_b, take_date
         command = self.ADD_NEW_TAKER
         try:
