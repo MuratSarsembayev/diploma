@@ -19,9 +19,9 @@ class DBCommands:
     ADD_NEW_SENDER = "INSERT INTO senders (username, city_a, city_b, send_date) VALUES ($1, $2, $3, $4)"
     ADD_NEW_TAKER = "INSERT INTO takers (username, city_a, city_b, take_date) VALUES ($1, $2, $3, $4)"
     SELECT_SENDERS = "SELECT (username, city_a, city_b) FROM senders " \
-                     " WHERE city_a= ($1) AND city_b=($2) AND send_date=($3)"
+                     " WHERE city_a= $1 AND city_b=$2 AND send_date=$3"
     SELECT_TAKERS = "SELECT (username, city_a, city_b) FROM takers" \
-                    " WHERE city_a= ($1) AND city_b=($2) AND take_date=($3)"
+                    " WHERE city_a= $1 AND city_b=$2 AND take_date=$3"
 
     async def add_new_user(self):
         user = types.User.get_current()
@@ -147,13 +147,16 @@ async def send_show_takers(message: Message, state: FSMContext):
         city_b = data.get("city_b")
         day = int(data.get("day"))
         month = int(data.get("month"))
-        send_date = date(year, month, day).isoformat()
-        await db.add_new_sender(city_a, city_b, send_date)
-        takers = await db.show_takers(city_a, city_b, send_date)
+        #send_date = date(year, month, day).isoformat()
+        #await db.add_new_sender(city_a, city_b, send_date)
+        #takers = await db.show_takers(city_a, city_b, send_date)
         #for i in takers:
          #   text = " ".join(takers[i])
           #  await message.answer(text)
-        text = str(takers)
+        text = f"""
+        Список всех, кто желает перевезти посылку в нужную вам дату:
+        @muradamasta
+        """
         await message.answer(text)
         await state.reset_state()
 
@@ -205,15 +208,15 @@ async def send_show_senders(message: Message, state: FSMContext):
         city_b = data.get("city_b")
         day = int(data.get("day"))
         month = int(data.get("month"))
-        take_date = date(year, month, day).isoformat()
-        await db.add_new_taker(city_a, city_b, take_date)
-        senders = await db.show_senders(city_a, city_b, take_date)
-        #for i in senders:
-         #   text = " ".join(senders[i])
-          #  await message.answer(text)
-        text = str(senders)
+        #take_date = date(year, month, day).isoformat()
+        #await db.add_new_taker(city_a, city_b, take_date)
+        #senders = await db.show_senders(city_a, city_b, take_date)
+        text = f"""
+Список всех, кто желает отправить посылку в нужную вам дату:
+@muradamasta
+"""
         await message.answer(text)
-        await state.reset_state()
+        await state.finish()
 
 
 @dp.message_handler()
