@@ -155,7 +155,9 @@ async def send_show_takers(message: Message, state: FSMContext):
           #  await message.answer(text)
         text = f"""
         Список всех, кто желает перевезти посылку в нужную вам дату:
-        @muradamasta
+@muradamasta
+@therottenheart
+@ansat
         """
         await message.answer(text)
         await state.reset_state()
@@ -214,6 +216,8 @@ async def send_show_senders(message: Message, state: FSMContext):
         text = f"""
 Список всех, кто желает отправить посылку в нужную вам дату:
 @muradamasta
+@therottenheart
+@ansat
 """
         await message.answer(text)
         await state.finish()
